@@ -3,29 +3,28 @@
 
 //#define DEBUG_CONTROLS 1
 
-enum class game_mode {
-	ONE_PLAYER,
-	TWO_PLAYER,
-	ONLINE
-};
-
 constexpr int SCREEN_WIDTH = 1024;
 constexpr int SCREEN_HEIGHT = 768;
 
-constexpr int EMPTY_PIECE = 0;
-constexpr int PLAYER_PIECE = 1;
-//actually, player two is the AI piece
-//i'm not going to search and replace the term out though, i'm used to it
-constexpr int AI_PIECE = 2;
+enum PIECE_TYPE
+{
+	TYPE_L,
+	TYPE_T,
+	TYPE_S,
+	TYPE_Z,
+	TYPE_J,
+	TYPE_O,
+	TYPE_I,
+};
 
-constexpr int SEARCH_DEPTH = 5;
-
-//constexpr bool DEBUG_PRINT = true;
-constexpr bool DEBUG_PRINT = false;
-constexpr bool RANDOM_PLAYER_TO_MOVE = false;
-constexpr bool AI_TUNING = false;
-
-constexpr int COLOR_CYCLE_SPEED = 200;
+//tetris colors
+constexpr SDL_Color TETRIS_ORANGE = {254, 163, 8};
+constexpr SDL_Color TETRIS_PURPLE = {133, 96, 165};
+constexpr SDL_Color TETRIS_GREEN = {1, 255, 28};
+constexpr SDL_Color TETRIS_RED = {255, 1, 3};
+constexpr SDL_Color TETRIS_BLUE = {0, 0, 197};
+constexpr SDL_Color TETRIS_GOLD = {120, 115, 5};
+constexpr SDL_Color TETRIS_CYAN = {0, 186, 185};
 
 constexpr SDL_Color MODS_BLUE = {0x00, 0xCE, 0xFF};
 constexpr SDL_Color GAINSBORO = {220, 220, 220};
@@ -50,10 +49,3 @@ constexpr SDL_Color WHITE = {255, 255, 255};
 constexpr SDL_Color BLACK = {0, 0, 0};
 constexpr SDL_Color PASTEL_BLUE = {126, 214, 223};
 constexpr SDL_Color LIME_GREEN = {186, 220, 88};
-
-constexpr int CELL_SIZE = 100;
-constexpr int LINE_THICKNESS = 5;
-constexpr int NUM_ROWS = 6;
-constexpr int NUM_COLS = 7;
-constexpr int BOARD_X_OFFSET = (SCREEN_WIDTH / 2) - ((CELL_SIZE * (NUM_COLS + 2)) / 2);
-constexpr int BOARD_Y_OFFSET = (SCREEN_HEIGHT / 2) - ((CELL_SIZE * (NUM_ROWS + 2)) / 2) + 30;

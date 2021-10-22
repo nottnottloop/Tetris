@@ -19,29 +19,36 @@ game_over_text_({SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, {0, 0})
 	game_over_text_.loadFontTexture(RED, "Game Over!");
 }
 
-void PlayingState::gameOver() {
+void PlayingState::gameOver() 
+{
 	game_over_ = true;
 }
 
-void PlayingState::resetGame() {
+void PlayingState::resetGame() 
+{
 	game_over_ = false;
 }
 
-void PlayingState::handleInput(Game &game, const SDL_Event &event) {
-	switch (event.type) {
+void PlayingState::handleInput(Game &game, const SDL_Event &event) 
+{
+	switch (event.type) 
+	{
 		case SDL_QUIT:
 			game.quit_ = true;
 			break;
 		case SDL_KEYDOWN:
-			switch (event.key.keysym.sym) {
+			switch (event.key.keysym.sym)
+			{
 
 			}
 	}
 }
 
-void PlayingState::update(Game& game) {
+void PlayingState::update(Game& game) 
+{
 	window.clear(BLACK, 0xFF);
-	if (game_over_) {
+	if (game_over_)
+	{
 		window.render(game_over_text_, true);
 	}
 	window.display();

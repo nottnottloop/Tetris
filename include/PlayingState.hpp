@@ -8,6 +8,7 @@
 #include "Entity.hpp"
 #include "Constants.hpp"
 #include "BasicButton.hpp"
+#include "Tetromino.hpp"
 
 class PlayingState : public GameState {
 public:
@@ -17,6 +18,8 @@ public:
 	void gameOver();
 	void resetGame();
 private:
+	std::vector<Tetromino> tetrominoes_;
+	std::array<std::array<bool, 20>, 10> board_;
 	bool game_over_;
 	Text game_over_text_;
 };

@@ -22,7 +22,8 @@ play_button_({SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2, 200, 100}, {0, 0}, BLAC
 	flavor_text_.loadFontTexture(WHITE, "Ominous black background...");
 }
 
-void IntroState::handleInput(Game &game, const SDL_Event &event) {
+void IntroState::handleInput(Game &game, const SDL_Event &event) 
+{
 		switch (event.type) {
 			case SDL_QUIT:
 				game.quit_ = true;
@@ -35,14 +36,16 @@ void IntroState::handleInput(Game &game, const SDL_Event &event) {
 				break;
 			case SDL_KEYDOWN:
 			case SDL_MOUSEBUTTONUP:
-				if (mouse_down_) {
+				if (mouse_down_) 
+				{
 				}
 				mouse_down_ = false;
 				break;
 		}
 }
 
-void IntroState::update(Game &game) {
+void IntroState::update(Game &game) 
+{
 	window.clear(BLACK, 0xFF);
 	window.render(text_);
 	window.render(flavor_text_);
