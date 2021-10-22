@@ -14,7 +14,9 @@ PlayingState::PlayingState()
 :GameState("PlayingState"),
 game_over_(false),
 game_over_text_({SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, {0, 0}),
-ticks_needed_(300)
+ticks_needed_(300),
+piece_falling_(false),
+current_tetromino_(rd_)
 {
 	rd_.seed(std::random_device{}());
 	ticks_at_last_update_ = SDL_GetTicks() + ticks_needed_;
@@ -25,7 +27,7 @@ ticks_needed_(300)
 	{
 		for (int c = 0; c < BOARD_COLS; c++)
 		{
-			board_[r][c] = std::make_pair(true, BLUE);
+			board_[r][c] = std::make_pair(false, BLACK);
 		}
 	}
 }
@@ -40,7 +42,10 @@ void PlayingState::advanceGame()
 
 void PlayingState::spawnTetromino()
 {
-	tetrominoes_.push_back(Tetromino(rd_));
+	current_tetromino_ = Tetromino(rd_);
+	piece_falling_ = true;
+	x_index_ = 0;
+	y_index_ = 5;
 }
 
 void PlayingState::gameOver() 
@@ -71,11 +76,11 @@ void PlayingState::handleInput(Game &game, const SDL_Event &event)
 
 void PlayingState::update(Game& game) 
 {
-	//if (SDL_GetTicks() - ticks_at_last_update_ > ticks_needed_)
-	//{
-	//	ticks_at_last_update_ = SDL_GetTicks();
-	//	advanceGame();
-	//}
+	if (SDL_GetTicks() - ticks_at_last_update_ > ticks_needed_)
+	{
+		ticks_at_last_update_ = SDL_GetTicks();
+		advanceGame();
+	}
 
 	window.clear(BLACK, 0xFF);
 
@@ -84,7 +89,22 @@ void PlayingState::update(Game& game)
 	{
 		for (int c = 0; c < BOARD_COLS; c++)
 		{
-			window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * c, r * CELL_SIZE, CELL_SIZE, CELL_SIZE}, board_[r][c].second);
+			if (board_[r][c].first)
+			{
+				//window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * c, r * CELL_SIZE, CELL_SIZE, CELL_SIZE}, board_[r][c].second);
+			}
+		}
+	}
+
+	//render current tetromino
+	for (int r = 0; r < 4; r++)
+	{
+		for (int c = 0; c < 4; c++)
+		{
+			if (current_tetromino_.grid_[r][c])
+			{
+				window.renderRect({SCREEN_WIDTH / 2 + CELL_SIZE * (x_index_ + c), (y_index_ + r) * CELL_SIZE, CELL_SIZE, CELL_SIZE}, current_tetromino_.color_);
+			}
 		}
 	}
 

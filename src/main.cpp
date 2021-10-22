@@ -13,7 +13,7 @@
 #include "Constants.hpp"
 
 
-RenderWindow window("Stateful Connect 4", SCREEN_WIDTH, SCREEN_HEIGHT);
+RenderWindow window("Tetris", SCREEN_WIDTH, SCREEN_HEIGHT);
 
 int main(int argc, char* argv[]) {
 	if (SDL_Init(SDL_INIT_VIDEO) > 0)
