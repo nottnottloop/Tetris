@@ -30,6 +30,8 @@ constexpr SDL_Color TETRIS_BLUE = {0, 0, 197};
 constexpr SDL_Color TETRIS_GOLD = {120, 115, 5};
 constexpr SDL_Color TETRIS_CYAN = {0, 186, 185};
 
+constexpr int BUTTON_HOLD_DOWN_AMOUNT = 60;
+
 constexpr SDL_Color MODS_BLUE = {0x00, 0xCE, 0xFF};
 constexpr SDL_Color GAINSBORO = {220, 220, 220};
 constexpr SDL_Color DISNEY_GOOFY_COLOR = {237, 126, 32};

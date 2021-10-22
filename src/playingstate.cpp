@@ -16,7 +16,8 @@ game_over_(false),
 game_over_text_({SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, {0, 0}),
 ticks_needed_(300),
 piece_falling_(false),
-current_tetromino_(rd_)
+current_tetromino_(rd_),
+button_held_down_duration_(0)
 {
 	rd_.seed(std::random_device{}());
 	ticks_at_last_update_ = SDL_GetTicks() + ticks_needed_;
@@ -65,10 +66,30 @@ void PlayingState::handleInput(Game &game, const SDL_Event &event)
 		case SDL_QUIT:
 			game.quit_ = true;
 			break;
+		case SDL_KEYUP:
+			button_down_ = false;
+			button_held_down_duration_ = 0;
+			break;
 		case SDL_KEYDOWN:
+			button_held_down_duration_++;
+			//std::cout << button_down_held_delay_ << std::endl;
 			switch (event.key.keysym.sym)
 			{
-				case SDLK_SPACE:
+				case SDLK_LEFT:
+					if (!button_down_ || button_held_down_duration_ > BUTTON_HOLD_DOWN_AMOUNT)
+					{
+						x_index_--;
+						button_held_down_duration_ -= 5;
+						button_down_ = true;
+					}
+					break;
+				case SDLK_RIGHT:
+					if (!button_down_ || button_held_down_duration_ > BUTTON_HOLD_DOWN_AMOUNT)
+					{
+						x_index_++;
+						button_held_down_duration_ -= 5;
+						button_down_ = true;
+					}
 					break;
 			}
 	}

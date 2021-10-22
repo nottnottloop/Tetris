@@ -28,6 +28,8 @@ private:
 	bool piece_falling_;
 	int x_index_;
 	int y_index_;
+	bool button_down_;
+	int button_held_down_duration_;
 	Tetromino current_tetromino_;
 	std::array<std::array<std::pair<bool, SDL_Color>, BOARD_COLS>, BOARD_ROWS> board_;
 	bool game_over_;
