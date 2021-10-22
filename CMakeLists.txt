@@ -19,8 +19,8 @@ set (SOURCES
 	${APP_ICON_RESOURCE_WINDOWS}
 )
 
-#add_executable (Tetris ${SOURCES})
-add_executable (Tetris WIN32 ${SOURCES})
+add_executable (Tetris ${SOURCES})
+#add_executable (Tetris WIN32 ${SOURCES})
 set_target_properties(Tetris PROPERTIES OUTPUT_NAME "Tetris")
 
 target_include_directories (Tetris PUBLIC

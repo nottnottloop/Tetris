@@ -1,3 +1,4 @@
+#include <iostream>
 #include <random>
 #include "Tetromino.hpp"
 
@@ -77,4 +78,5 @@ Tetromino::Tetromino(std::mt19937_64 &rd)
 			tetromino_type_ = TYPE_I;
 			break;
 	}
+	std::cout << "Made tetromino" << "\n";
 }

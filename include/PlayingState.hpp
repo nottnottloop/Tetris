@@ -16,11 +16,18 @@ public:
 	PlayingState();
 	void handleInput(Game &game, const SDL_Event &event);
 	void update(Game &game);
+	void advanceGame();
+	void spawnTetromino();
 	void gameOver();
 	void resetGame();
 private:
+	std::mt19937_64 rd_;
+	Uint32 ticks_needed_;
+	Uint32 ticks_at_last_update_;
+	Uint32 counter_end_;
+	bool piece_falling_;
 	std::vector<Tetromino> tetrominoes_;
-	std::array<std::array<std::pair<bool, SDL_Color>, BOARD_ROWS>, BOARD_COLS> board_;
+	std::array<std::array<std::pair<bool, SDL_Color>, BOARD_COLS>, BOARD_ROWS> board_;
 	bool game_over_;
 	Text game_over_text_;
 };
