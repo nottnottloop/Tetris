@@ -53,7 +53,6 @@ void PlayingState::spawnTetromino()
 
 void PlayingState::moveTetromino(int index)
 {
-
 	//check if we can move
 	for (int r = 0; r < 4; r++)
 	{
@@ -143,6 +142,22 @@ void PlayingState::handleInput(Game &game, const SDL_Event &event)
 						button_down_ = true;
 					}
 					break;
+				case SDLK_UP:
+					if (!button_down_)
+					{
+						current_tetromino_.rotate(true);
+						moveTetromino(0);
+						button_down_ = true;
+					}
+					break;
+				case SDLK_DOWN:
+					if (!button_down_)
+					{
+						current_tetromino_.rotate(false);
+						moveTetromino(0);
+						button_down_ = true;
+					}
+					break;
 			}
 	}
 }
@@ -167,19 +182,19 @@ void PlayingState::update(Game& game)
 				window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * c, r * CELL_SIZE, CELL_SIZE, CELL_SIZE}, board_[r][c].second);
 			}
 		}
-	}
+		}
 
 	//render current tetromino
-	//for (int r = 0; r < 4; r++)
-	//{
-	//	for (int c = 0; c < 4; c++)
-	//	{
-	//		if (current_tetromino_.grid_[r][c])
-	//		{
-	//			//window.renderRect({SCREEN_WIDTH / 2 + CELL_SIZE * (x_index_ + c), (y_index_ + r) * CELL_SIZE, CELL_SIZE, CELL_SIZE}, current_tetromino_.color_);
-	//		}
-	//	}
-	//}
+	for (int r = 0; r < 4; r++)
+	{
+		for (int c = 0; c < 4; c++)
+		{
+			if (current_tetromino_.grid_[r][c])
+			{
+				//window.renderRect({SCREEN_WIDTH / 2 + CELL_SIZE * (x_index_ + c), (y_index_ + r) * CELL_SIZE, CELL_SIZE, CELL_SIZE}, current_tetromino_.color_);
+			}
+		}
+	}
 
 	//rows
 	for (int r = 18; r > 0; r--)

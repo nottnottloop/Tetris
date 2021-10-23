@@ -87,3 +87,58 @@ Tetromino::Tetromino(std::mt19937_64 &rd)
 	}
 	std::cout << "Made tetromino of " << tetromino_type_name_ << "\n";
 }
+
+void Tetromino::rotate(bool anti_clockwise)
+{
+	switch (tetromino_type_)
+	{
+		case TYPE_L:
+		case TYPE_T:
+		case TYPE_S:
+		case TYPE_Z:
+		case TYPE_J:
+		case TYPE_O:
+		case TYPE_I:
+			if (!anti_clockwise)
+			{
+				translateGrid(false);
+			}
+			else
+			{
+				translateGrid(true);
+			}
+			break;
+	}
+}
+
+void Tetromino::translateGrid(bool anti_clockwise)
+{
+// An Inplace function to
+// rotate a N x N matrix
+// by 90 degrees in
+// anti-clockwise direction
+    // Consider all squares one by one
+    for (int x = 0; x < 4 / 2; x++) {
+        // Consider elements in group
+        // of 4 in current square
+        for (int y = x; y < 4 - x - 1; y++) {
+            // Store current cell in
+            // temp variable
+            int temp = grid_[x][y];
+ 
+            // Move values from right to top
+            grid_[x][y] = grid_[y][4 - 1 - x];
+ 
+            // Move values from bottom to right
+            grid_[y][4 - 1 - x]
+                = grid_[4 - 1 - x][4 - 1 - y];
+ 
+            // Move values from left to bottom
+            grid_[4 - 1 - x][4 - 1 - y]
+                = grid_[4 - 1 - y][x];
+ 
+            // Assign temp to left
+           grid_[4 - 1 - y][x] = temp;
+        }
+    }
+}
