@@ -4,6 +4,7 @@
 #include <vector>
 #include <array>
 #include <random>
+#include "Math.hpp"
 #include "GameState.hpp"
 #include "Text.hpp"
 #include "Entity.hpp"
@@ -18,6 +19,8 @@ public:
 	void update(Game &game);
 	void advanceGame();
 	void spawnTetromino();
+	void moveTetromino(int index);
+	void updateBoard();
 	void gameOver();
 	void resetGame();
 private:
