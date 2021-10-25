@@ -9,8 +9,8 @@ constexpr int SCREEN_HEIGHT = 760;
 constexpr int BOARD_ROWS = 18;
 constexpr int BOARD_COLS = 10;
 
-constexpr int nFieldWidth = 10;
-constexpr int nFieldHeight = 18;
+constexpr int nFieldWidth = 12;
+constexpr int nFieldHeight = 20;
 
 constexpr int CELL_SIZE = 40;
 

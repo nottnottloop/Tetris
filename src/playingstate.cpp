@@ -123,8 +123,8 @@ bool PlayingState::doesPieceFit(int nTetromino, int rotation, int x, int y)
 				}
 			}
 		}
-		return true;
 	}
+	return true;
 }
 
 void PlayingState::advanceGame()
@@ -139,6 +139,31 @@ void PlayingState::gameOver()
 void PlayingState::resetGame() 
 {
 	game_over_ = false;
+}
+
+void PlayingState::moveTetromino(int x, int y)
+{
+	if (x == -1)
+	{
+		if (doesPieceFit(currentPiece, currentRotation, currentX - 1, currentY))
+		{
+			currentX -= 1;
+		}
+	}
+	else if (x == 1)
+	{
+		if (doesPieceFit(currentPiece, currentRotation, currentX + 1, currentY))
+		{
+			currentX += 1;
+		}
+	}
+	else if (y == 1)
+	{
+		if (doesPieceFit(currentPiece, currentRotation, currentX, currentY + 1))
+		{
+			currentY += 1;
+		}
+	}
 }
 
 void PlayingState::handleInput(Game &game, const SDL_Event &event) 
@@ -157,6 +182,36 @@ void PlayingState::handleInput(Game &game, const SDL_Event &event)
 			//std::cout << button_down_held_delay_ << std::endl;
 			switch (event.key.keysym.sym)
 			{
+				case SDLK_LEFT:
+					if (!button_down_ || button_held_down_duration_ > BUTTON_HOLD_DOWN_AMOUNT)
+					{
+						button_held_down_duration_ -= 2;
+						button_down_ = true;
+						moveTetromino(-1, 0);
+					}
+					break;
+				case SDLK_RIGHT:
+					if (!button_down_ || button_held_down_duration_ > BUTTON_HOLD_DOWN_AMOUNT)
+					{
+						button_held_down_duration_ -= 2;
+						button_down_ = true;
+						moveTetromino(1, 0);
+					}
+					break;
+				case SDLK_UP:
+					if (!button_down_)
+					{
+						button_down_ = true;
+					}
+					break;
+				case SDLK_DOWN:
+					if (!button_down_ || button_held_down_duration_ > BUTTON_HOLD_DOWN_AMOUNT)
+					{
+						button_held_down_duration_ -= 2;
+						button_down_ = true;
+						moveTetromino(0, 1);
+					}
+					break;
 			}
 	}
 }
@@ -166,6 +221,7 @@ void PlayingState::update(Game& game)
 	if (SDL_GetTicks() - ticks_at_last_update_ > ticks_needed_)
 	{
 		ticks_at_last_update_ = SDL_GetTicks();
+		advanceGame();
 	}
 
 	window.clear(BLACK, 0xFF);
@@ -189,8 +245,7 @@ void PlayingState::update(Game& game)
 			if (tetromino[currentPiece][rotate(i, j, currentRotation)] != L'.')
 			{
 				SDL_Color display_color = getBlockDisplayColor(tetromino[currentPiece][rotate(i, j, currentRotation)]);
-				//SDL_Color display_color = BLUE;
-				window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * i, j * CELL_SIZE, CELL_SIZE, CELL_SIZE}, display_color);
+				window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * i + CELL_SIZE * (currentX - 1), CELL_SIZE * j + CELL_SIZE * currentY, CELL_SIZE, CELL_SIZE}, display_color);
 			}
 		}
 	}

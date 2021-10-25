@@ -17,6 +17,7 @@ public:
 	int rotate(int x, int y, int r);
 	bool doesPieceFit(int tetromino, int rotation, int x, int y);
 	SDL_Color getBlockDisplayColor(char character);
+	void moveTetromino(int x, int y);
 	void handleInput(Game &game, const SDL_Event &event);
 	void update(Game &game);
 	void advanceGame();
