@@ -10,6 +10,8 @@
 
 extern RenderWindow window;
 
+std::wstring tetromino[7];
+
 PlayingState::PlayingState()
 :GameState("PlayingState"),
 game_over_(false),
@@ -23,6 +25,22 @@ button_held_down_duration_(0)
 	ticks_at_last_update_ = SDL_GetTicks() + ticks_needed_;
 	game_over_text_.openFont("res/fixedsys.ttf", 30);
 	game_over_text_.loadFontTexture(RED, "Game Over!");
+
+	//create tetrominoes
+	//I shape
+	tetromino[0].append(L"..C...C...C...C.");
+	//T shape
+	tetromino[1].append(L"..P..PP...P.....");
+	//O shape, A for gold or chemical symbol Au
+	tetromino[2].append(L".....AA..AA.....");
+	//Z shape
+	tetromino[3].append(L"..R..RR..R......");
+	//S shape
+	tetromino[4].append(L".G...GG...G.....");
+	//L shape
+	tetromino[5].append(L".O...O...OO.....");
+	//J shape
+	tetromino[6].append(L"..B...B..BB.....");
 
 }
 
