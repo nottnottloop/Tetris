@@ -16,7 +16,6 @@ game_over_(false),
 game_over_text_({SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, {0, 0}),
 ticks_needed_(300),
 piece_falling_(false),
-current_tetromino_(rd_),
 button_down_(false),
 button_held_down_duration_(0)
 {
@@ -25,105 +24,9 @@ button_held_down_duration_(0)
 	game_over_text_.openFont("res/fixedsys.ttf", 30);
 	game_over_text_.loadFontTexture(RED, "Game Over!");
 
-	for (int r = 0; r < BOARD_ROWS; r++)
-	{
-		for (int c = 0; c < BOARD_COLS; c++)
-		{
-			board_[r][c] = std::make_pair(false, BLACK);
-		}
-	}
 }
 
 void PlayingState::advanceGame()
-{
-	if (!piece_falling_)
-	{
-		spawnTetromino();
-	}
-	else if (isValidMove(0, 1))
-	{
-		deleteOldTetrominoLocation();
-		y_index_++;
-		moveTetromino(0);
-	}
-}
-
-void PlayingState::spawnTetromino()
-{
-	current_tetromino_ = Tetromino(rd_);
-	piece_falling_ = true;
-	x_index_ = 0;
-	y_index_ = -1;
-	moveTetromino(0);
-}
-
-bool PlayingState::isValidMove(int x_move, int y_move)
-{
-	//check if we can move
-	for (int r = 0; r < 4; r++)
-	{
-		for (int c = 0; c < 4; c++)
-		{
-			if (current_tetromino_.grid_[r][c])
-			{
-				if (x_index_ + x_move + c < 0 || x_index_ + x_move + c > 9 || y_index_ == 15)
-				{
-					return false;
-				}
-			}
-		}
-	}
-	return true;
-}
-
-void PlayingState::deleteOldTetrominoLocation()
-{
-	//delete old piece
-	for (int r = 0; r < 4; r++)
-	{
-		for (int c = 0; c < 4; c++)
-		{
-			if (current_tetromino_.grid_[r][c])
-			{
-				board_[y_index_ + r][x_index_ + c] = {false, current_tetromino_.color_};
-			}
-		}
-	}
-}
-
-void PlayingState::moveTetromino(int index)
-{
-	if (!isValidMove(index, 0))
-	{
-		return;
-	}
-
-	deleteOldTetrominoLocation();
-
-	x_index_ += index;
-
-	//move the piece
-	for (int r = 0; r < 4; r++)
-	{
-		for (int c = 0; c < 4; c++)
-		{
-			if (current_tetromino_.grid_[r][c])
-			{
-				board_[y_index_ + r][x_index_ + c] = {true, current_tetromino_.color_};
-			}
-		}
-	}
-	updateBoard();
-}
-
-void PlayingState::rotateTetromino(bool anti_clockwise_or_not)
-{
-	deleteOldTetrominoLocation();
-	current_tetromino_.rotate(anti_clockwise_or_not);
-	moveTetromino(0);
-}
-
-void PlayingState::updateBoard()
 {
 }
 
@@ -153,40 +56,6 @@ void PlayingState::handleInput(Game &game, const SDL_Event &event)
 			//std::cout << button_down_held_delay_ << std::endl;
 			switch (event.key.keysym.sym)
 			{
-				case SDLK_LEFT:
-					if (!button_down_ || button_held_down_duration_ > BUTTON_HOLD_DOWN_AMOUNT)
-					{
-						moveTetromino(-1);
-						button_held_down_duration_ -= 2;
-						button_down_ = true;
-					}
-					break;
-				case SDLK_RIGHT:
-					if (!button_down_ || button_held_down_duration_ > BUTTON_HOLD_DOWN_AMOUNT)
-					{
-						moveTetromino(1);
-						button_held_down_duration_ -= 2;
-						button_down_ = true;
-					}
-					break;
-				case SDLK_UP:
-					if (!button_down_)
-					{
-						rotateTetromino(true);
-						button_down_ = true;
-					}
-					break;
-				case SDLK_DOWN:
-					if (!button_down_)
-					{
-						rotateTetromino(false);
-						button_down_ = true;
-					}
-					break;
-				case SDLK_SPACE:
-					deleteOldTetrominoLocation();
-					spawnTetromino();
-					break;
 			}
 	}
 }
@@ -196,34 +65,21 @@ void PlayingState::update(Game& game)
 	if (SDL_GetTicks() - ticks_at_last_update_ > ticks_needed_)
 	{
 		ticks_at_last_update_ = SDL_GetTicks();
-		advanceGame();
 	}
 
 	window.clear(BLACK, 0xFF);
 
 	//tetromino blocks
-	for (int r = 0; r < BOARD_ROWS; r++)
-	{
-		for (int c = 0; c < BOARD_COLS; c++)
-		{
-			if (board_[r][c].first)
-			{
-				window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * c, r * CELL_SIZE, CELL_SIZE, CELL_SIZE}, board_[r][c].second);
-			}
-		}
-		}
-
-	//render current tetromino
-	for (int r = 0; r < 4; r++)
-	{
-		for (int c = 0; c < 4; c++)
-		{
-			if (current_tetromino_.grid_[r][c])
-			{
-				//window.renderRect({SCREEN_WIDTH / 2 + CELL_SIZE * (x_index_ + c), (y_index_ + r) * CELL_SIZE, CELL_SIZE, CELL_SIZE}, current_tetromino_.color_);
-			}
-		}
-	}
+	//for (int r = 0; r < BOARD_ROWS; r++)
+	//{
+	//	for (int c = 0; c < BOARD_COLS; c++)
+	//	{
+	//		if (board_[r][c].first)
+	//		{
+	//			window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * c, r * CELL_SIZE, CELL_SIZE, CELL_SIZE}, board_[r][c].second);
+	//		}
+	//	}
+	//	}
 
 	//rows
 	for (int r = 18; r > 0; r--)

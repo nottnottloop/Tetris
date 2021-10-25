@@ -10,7 +10,6 @@
 #include "Entity.hpp"
 #include "Constants.hpp"
 #include "BasicButton.hpp"
-#include "Tetromino.hpp"
 
 class PlayingState : public GameState {
 public:
@@ -18,12 +17,6 @@ public:
 	void handleInput(Game &game, const SDL_Event &event);
 	void update(Game &game);
 	void advanceGame();
-	void spawnTetromino();
-	bool isValidMove(int x_move, int y_move);
-	void deleteOldTetrominoLocation();
-	void moveTetromino(int index);
-	void rotateTetromino(bool anti_clockwise_or_not);
-	void updateBoard();
 	void gameOver();
 	void resetGame();
 private:
@@ -36,8 +29,6 @@ private:
 	int y_index_;
 	bool button_down_;
 	int button_held_down_duration_;
-	Tetromino current_tetromino_;
-	std::array<std::array<std::pair<bool, SDL_Color>, BOARD_COLS>, BOARD_ROWS> board_;
 	bool game_over_;
 	Text game_over_text_;
 };

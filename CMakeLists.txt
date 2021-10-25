@@ -15,7 +15,7 @@ set (SOURCES
 	src/playingstate.cpp
 	src/text.cpp
 	src/basicbutton.cpp
-	src/tetromino.cpp
+	
 	${APP_ICON_RESOURCE_WINDOWS}
 )
 
