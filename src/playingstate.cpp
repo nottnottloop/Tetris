@@ -1,6 +1,7 @@
 #include <iostream>
 #include <utility>
 #include <SDL.h>
+#include <limits.h>
 #include "PlayingState.hpp"
 #include "Text.hpp"
 #include "RenderWindow.hpp"
@@ -22,7 +23,8 @@ currentPiece(0),
 currentRotation(0),
 currentX(nFieldWidth / 2),
 currentY(0),
-button_held_down_duration_(0)
+button_held_down_duration_(0),
+forceDown(false)
 {
 	rd_.seed(std::random_device{}());
 	ticks_at_last_update_ = SDL_GetTicks() + ticks_needed_;
@@ -52,7 +54,7 @@ button_held_down_duration_(0)
 
 }
 
-int PlayingState::rotate(int x, int y, int r)
+int PlayingState::rotate(int x, int y, unsigned int r)
 {
 	switch (r % 4)
 	{
@@ -141,7 +143,7 @@ void PlayingState::resetGame()
 	game_over_ = false;
 }
 
-void PlayingState::moveTetromino(int x, int y)
+void PlayingState::moveTetromino(int x, int y, int r)
 {
 	if (x == -1)
 	{
@@ -164,6 +166,13 @@ void PlayingState::moveTetromino(int x, int y)
 			currentY += 1;
 		}
 	}
+	else if (r != 0)
+	{
+		if (doesPieceFit(currentPiece, currentRotation + r, currentX, currentY))
+		{
+			currentRotation += r;
+		}
+	}
 }
 
 void PlayingState::handleInput(Game &game, const SDL_Event &event) 
@@ -174,12 +183,22 @@ void PlayingState::handleInput(Game &game, const SDL_Event &event)
 			game.quit_ = true;
 			break;
 		case SDL_KEYUP:
-			button_down_ = false;
-			button_held_down_duration_ = 0;
+			switch (event.key.keysym.sym)
+			{
+				case SDLK_LEFT:
+				case SDLK_RIGHT:
+				case SDLK_DOWN:
+					button_down_ = false;
+					button_held_down_duration_ = 0;
+					break;
+				case SDLK_x:
+				case SDLK_z:
+					rotate_button_down_ = false;
+					break;
+			}
 			break;
 		case SDL_KEYDOWN:
 			button_held_down_duration_++;
-			//std::cout << button_down_held_delay_ << std::endl;
 			switch (event.key.keysym.sym)
 			{
 				case SDLK_LEFT:
@@ -187,7 +206,7 @@ void PlayingState::handleInput(Game &game, const SDL_Event &event)
 					{
 						button_held_down_duration_ -= 2;
 						button_down_ = true;
-						moveTetromino(-1, 0);
+						moveTetromino(-1, 0, 0);
 					}
 					break;
 				case SDLK_RIGHT:
@@ -195,13 +214,21 @@ void PlayingState::handleInput(Game &game, const SDL_Event &event)
 					{
 						button_held_down_duration_ -= 2;
 						button_down_ = true;
-						moveTetromino(1, 0);
+						moveTetromino(1, 0, 0);
 					}
 					break;
-				case SDLK_UP:
-					if (!button_down_)
+				case SDLK_z:
+					if (!rotate_button_down_)
 					{
-						button_down_ = true;
+						rotate_button_down_ = true;
+						moveTetromino(0, 0, -1);
+					}
+					break;
+				case SDLK_x:
+					if (!rotate_button_down_)
+					{
+						rotate_button_down_ = true;
+						moveTetromino(0, 0, 1);
 					}
 					break;
 				case SDLK_DOWN:
@@ -209,7 +236,7 @@ void PlayingState::handleInput(Game &game, const SDL_Event &event)
 					{
 						button_held_down_duration_ -= 2;
 						button_down_ = true;
-						moveTetromino(0, 1);
+						moveTetromino(0, 1, 0);
 					}
 					break;
 			}
@@ -221,7 +248,7 @@ void PlayingState::update(Game& game)
 	if (SDL_GetTicks() - ticks_at_last_update_ > ticks_needed_)
 	{
 		ticks_at_last_update_ = SDL_GetTicks();
-		advanceGame();
+		forceDown = true;
 	}
 
 	window.clear(BLACK, 0xFF);
@@ -233,7 +260,7 @@ void PlayingState::update(Game& game)
 		for (int y = 0; y < nFieldHeight; y++)
 			{
 				SDL_Color display_color = getBlockDisplayColor(pField[y*nFieldWidth + x]);
-				window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * x, y * CELL_SIZE, CELL_SIZE, CELL_SIZE}, display_color);
+				window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 6) + CELL_SIZE * x, y * CELL_SIZE, CELL_SIZE, CELL_SIZE}, display_color);
 			}
 		}
 
@@ -245,10 +272,67 @@ void PlayingState::update(Game& game)
 			if (tetromino[currentPiece][rotate(i, j, currentRotation)] != L'.')
 			{
 				SDL_Color display_color = getBlockDisplayColor(tetromino[currentPiece][rotate(i, j, currentRotation)]);
-				window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * i + CELL_SIZE * (currentX - 1), CELL_SIZE * j + CELL_SIZE * currentY, CELL_SIZE, CELL_SIZE}, display_color);
+				window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 6) + CELL_SIZE * i + CELL_SIZE * currentX, CELL_SIZE * j + CELL_SIZE * currentY, CELL_SIZE, CELL_SIZE}, display_color);
 			}
 		}
 	}
+
+	if (forceDown)
+	{
+		if (doesPieceFit(currentPiece, currentRotation, currentX, currentY + 1))
+			currentY++;
+		else
+		{
+			// It can't! Lock the piece in place
+			for (int px = 0; px < 4; px++)
+				for (int py = 0; py < 4; py++)
+					if (tetromino[currentPiece][rotate(px, py, currentRotation)] != L'.')
+						pField[(currentY + py) * nFieldWidth + (currentX + px)] = tetromino[currentPiece][rotate(px, py, currentRotation)];
+
+			// Check for lines
+			for (int py = 0; py < 4; py++)
+				if (currentY + py < nFieldHeight - 1)
+				{
+					bool bLine = true;
+					for (int px = 1; px < nFieldWidth - 1; px++)
+						bLine &= (pField[(currentY + py) * nFieldWidth + px]) != 0;
+
+					if (bLine)
+					{
+						// Remove Line, set to =
+						for (int px = 1; px < nFieldWidth - 1; px++)
+							pField[(currentY + py) * nFieldWidth + px] = 8;
+						vLines.push_back(currentY + py);
+					}
+				}
+
+			score += 25;
+			if (!vLines.empty())	score += (1 << vLines.size()) * 100;
+
+			// Pick New Piece
+			currentX = nFieldWidth / 2;
+			currentY = 0;
+			currentRotation = 0;
+			currentPiece = rand() % 7;
+
+			// If piece does not fit straight away, game over!
+			game_over_ = !doesPieceFit(currentPiece, currentRotation, currentX, currentY);
+		}
+		forceDown = false;
+	}
+
+	if (!vLines.empty())
+		{
+			for (auto &v : vLines)
+				for (int px = 1; px < nFieldWidth - 1; px++)
+				{
+					for (int py = v; py > 0; py--)
+						pField[py * nFieldWidth + px] = pField[(py - 1) * nFieldWidth + px];
+					pField[px] = 0;
+				}
+
+			vLines.clear();
+		}
 
 
 	//rows

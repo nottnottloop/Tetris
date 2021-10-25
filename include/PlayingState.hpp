@@ -14,10 +14,10 @@
 class PlayingState : public GameState {
 public:
 	PlayingState();
-	int rotate(int x, int y, int r);
+	int rotate(int x, int y, unsigned int r);
 	bool doesPieceFit(int tetromino, int rotation, int x, int y);
 	SDL_Color getBlockDisplayColor(char character);
-	void moveTetromino(int x, int y);
+	void moveTetromino(int x, int y, int r);
 	void handleInput(Game &game, const SDL_Event &event);
 	void update(Game &game);
 	void advanceGame();
@@ -30,14 +30,16 @@ private:
 	Uint32 counter_end_;
 	unsigned char *pField;
 
-	int currentPiece;
-	int currentRotation;
+	unsigned int currentPiece;
+	unsigned int currentRotation;
 	int currentX;
 	int currentY;
+	int score;
+	bool forceDown;
+	std::vector<int> vLines;
 
-	int x_index_;
-	int y_index_;
 	bool button_down_;
+	bool rotate_button_down_;
 	int button_held_down_duration_;
 	bool game_over_;
 	Text game_over_text_;
