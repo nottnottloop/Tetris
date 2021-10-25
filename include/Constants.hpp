@@ -6,7 +6,7 @@
 constexpr int SCREEN_WIDTH = 1024;
 constexpr int SCREEN_HEIGHT = 760;
 
-constexpr int BOARD_ROWS = 20;
+constexpr int BOARD_ROWS = 19;
 constexpr int BOARD_COLS = 10;
 constexpr int CELL_SIZE = 40;
 
@@ -30,7 +30,7 @@ constexpr SDL_Color TETRIS_BLUE = {0, 0, 197};
 constexpr SDL_Color TETRIS_GOLD = {120, 115, 5};
 constexpr SDL_Color TETRIS_CYAN = {0, 186, 185};
 
-constexpr int BUTTON_HOLD_DOWN_AMOUNT = 60;
+constexpr int BUTTON_HOLD_DOWN_AMOUNT = 30;
 
 constexpr SDL_Color MODS_BLUE = {0x00, 0xCE, 0xFF};
 constexpr SDL_Color GAINSBORO = {220, 220, 220};

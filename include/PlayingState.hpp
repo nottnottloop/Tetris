@@ -19,7 +19,10 @@ public:
 	void update(Game &game);
 	void advanceGame();
 	void spawnTetromino();
+	bool isValidMove(int x_move, int y_move);
+	void deleteOldTetrominoLocation();
 	void moveTetromino(int index);
+	void rotateTetromino(bool anti_clockwise_or_not);
 	void updateBoard();
 	void gameOver();
 	void resetGame();

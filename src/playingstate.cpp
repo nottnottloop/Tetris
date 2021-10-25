@@ -40,6 +40,12 @@ void PlayingState::advanceGame()
 	{
 		spawnTetromino();
 	}
+	else if (isValidMove(0, 1))
+	{
+		deleteOldTetrominoLocation();
+		y_index_++;
+		moveTetromino(0);
+	}
 }
 
 void PlayingState::spawnTetromino()
@@ -47,11 +53,11 @@ void PlayingState::spawnTetromino()
 	current_tetromino_ = Tetromino(rd_);
 	piece_falling_ = true;
 	x_index_ = 0;
-	y_index_ = 5;
+	y_index_ = -1;
 	moveTetromino(0);
 }
 
-void PlayingState::moveTetromino(int index)
+bool PlayingState::isValidMove(int x_move, int y_move)
 {
 	//check if we can move
 	for (int r = 0; r < 4; r++)
@@ -60,14 +66,18 @@ void PlayingState::moveTetromino(int index)
 		{
 			if (current_tetromino_.grid_[r][c])
 			{
-				if (x_index_ + index + c < 0 || x_index_ + index + c > 9)
+				if (x_index_ + x_move + c < 0 || x_index_ + x_move + c > 9 || y_index_ == 15)
 				{
-					return;
+					return false;
 				}
 			}
 		}
 	}
+	return true;
+}
 
+void PlayingState::deleteOldTetrominoLocation()
+{
 	//delete old piece
 	for (int r = 0; r < 4; r++)
 	{
@@ -79,6 +89,16 @@ void PlayingState::moveTetromino(int index)
 			}
 		}
 	}
+}
+
+void PlayingState::moveTetromino(int index)
+{
+	if (!isValidMove(index, 0))
+	{
+		return;
+	}
+
+	deleteOldTetrominoLocation();
 
 	x_index_ += index;
 
@@ -94,6 +114,13 @@ void PlayingState::moveTetromino(int index)
 		}
 	}
 	updateBoard();
+}
+
+void PlayingState::rotateTetromino(bool anti_clockwise_or_not)
+{
+	deleteOldTetrominoLocation();
+	current_tetromino_.rotate(anti_clockwise_or_not);
+	moveTetromino(0);
 }
 
 void PlayingState::updateBoard()
@@ -145,18 +172,20 @@ void PlayingState::handleInput(Game &game, const SDL_Event &event)
 				case SDLK_UP:
 					if (!button_down_)
 					{
-						current_tetromino_.rotate(true);
-						moveTetromino(0);
+						rotateTetromino(true);
 						button_down_ = true;
 					}
 					break;
 				case SDLK_DOWN:
 					if (!button_down_)
 					{
-						current_tetromino_.rotate(false);
-						moveTetromino(0);
+						rotateTetromino(false);
 						button_down_ = true;
 					}
+					break;
+				case SDLK_SPACE:
+					deleteOldTetrominoLocation();
+					spawnTetromino();
 					break;
 			}
 	}
