@@ -17,8 +17,11 @@ PlayingState::PlayingState()
 game_over_(false),
 game_over_text_({SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, {0, 0}),
 ticks_needed_(300),
-piece_falling_(false),
 button_down_(false),
+currentPiece(0),
+currentRotation(0),
+currentX(nFieldWidth / 2),
+currentY(0),
 button_held_down_duration_(0)
 {
 	rd_.seed(std::random_device{}());
@@ -65,6 +68,65 @@ int PlayingState::rotate(int x, int y, int r)
 	return 0;
 }
 
+SDL_Color PlayingState::getBlockDisplayColor(char character)
+{
+	SDL_Color display_color = BLACK;
+	switch (character)
+	{
+		case L'.':
+			display_color = BLACK;
+			break;
+		case L'C':
+			display_color = TETRIS_CYAN;
+			break;
+		case L'A':
+			display_color = TETRIS_GOLD;
+			break;
+		case L'O':
+			display_color = TETRIS_ORANGE;
+			break;
+		case L'G':
+			display_color = TETRIS_GREEN;
+			break;
+		case L'P':
+			display_color = TETRIS_PURPLE;
+			break;
+		case L'R':
+			display_color = TETRIS_RED;
+			break;
+		case L'B':
+			display_color = TETRIS_BLUE;
+			break;
+	}
+	return display_color;
+}
+
+bool PlayingState::doesPieceFit(int nTetromino, int rotation, int x, int y)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			//get index to access piece with
+			int pi = rotate(i, j, rotation);
+
+			//get index to access field
+			int fi = (y + j) * nFieldWidth + (x + i);
+
+			if (x + i >= 0 && x + i < nFieldWidth)
+			{
+				if (y + j >= 0 && y + j < nFieldHeight)
+				{
+					// In Bounds so do collision check
+					if (tetromino[nTetromino][pi] != L'.' && pField[fi] != 0)
+						return false; // fail on first hit
+				}
+			}
+		}
+		return true;
+	}
+}
+
 void PlayingState::advanceGame()
 {
 }
@@ -107,44 +169,32 @@ void PlayingState::update(Game& game)
 	}
 
 	window.clear(BLACK, 0xFF);
-	pField[9] = 'G';
+
 
 	//tetromino blocks
 	for (int x = 0; x < nFieldWidth; x++)
 	{
 		for (int y = 0; y < nFieldHeight; y++)
 			{
-				SDL_Color display_color = BLACK;
-				switch (pField[y * nFieldWidth + x])
-				{
-					case '.':
-						display_color = BLACK;
-						break;
-					case 'C':
-						display_color = TETRIS_CYAN;
-						break;
-					case 'A':
-						display_color = TETRIS_GOLD;
-						break;
-					case 'O':
-						display_color = TETRIS_ORANGE;
-						break;
-					case 'G':
-						display_color = TETRIS_GREEN;
-						break;
-					case 'P':
-						display_color = TETRIS_PURPLE;
-						break;
-					case 'R':
-						display_color = TETRIS_RED;
-						break;
-					case 'B':
-						display_color = TETRIS_BLUE;
-						break;
-				}
+				SDL_Color display_color = getBlockDisplayColor(pField[y*nFieldWidth + x]);
 				window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * x, y * CELL_SIZE, CELL_SIZE, CELL_SIZE}, display_color);
 			}
 		}
+
+	//draw current piece
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			if (tetromino[currentPiece][rotate(i, j, currentRotation)] != L'.')
+			{
+				SDL_Color display_color = getBlockDisplayColor(tetromino[currentPiece][rotate(i, j, currentRotation)]);
+				//SDL_Color display_color = BLUE;
+				window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * i, j * CELL_SIZE, CELL_SIZE, CELL_SIZE}, display_color);
+			}
+		}
+	}
+
 
 	//rows
 	for (int r = 18; r > 0; r--)
