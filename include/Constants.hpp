@@ -6,8 +6,12 @@
 constexpr int SCREEN_WIDTH = 1024;
 constexpr int SCREEN_HEIGHT = 760;
 
-constexpr int BOARD_ROWS = 19;
+constexpr int BOARD_ROWS = 18;
 constexpr int BOARD_COLS = 10;
+
+constexpr int nFieldWidth = 10;
+constexpr int nFieldHeight = 18;
+
 constexpr int CELL_SIZE = 40;
 
 enum PIECE_TYPE

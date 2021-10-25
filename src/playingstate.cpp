@@ -42,6 +42,27 @@ button_held_down_duration_(0)
 	//J shape
 	tetromino[6].append(L"..B...B..BB.....");
 
+	pField = new unsigned char[nFieldWidth*nFieldHeight]; // Create play field buffer
+	for (int x = 0; x < nFieldWidth; x++) // Board Boundary
+		for (int y = 0; y < nFieldHeight; y++)
+			pField[y*nFieldWidth + x] = (x == 0 || x == nFieldWidth - 1 || y == nFieldHeight - 1) ? 9 : 0;
+
+}
+
+int PlayingState::rotate(int x, int y, int r)
+{
+	switch (r % 4)
+	{
+		case 0:
+			return y * 4 + x;
+		case 1:
+			return 12 + y - (x * 4);
+		case 2:
+			return 15 - (y * 4) - x;
+		case 3:
+			return 3 - y + (x * 4);
+	}
+	return 0;
 }
 
 void PlayingState::advanceGame()
@@ -86,18 +107,44 @@ void PlayingState::update(Game& game)
 	}
 
 	window.clear(BLACK, 0xFF);
+	pField[9] = 'G';
 
 	//tetromino blocks
-	//for (int r = 0; r < BOARD_ROWS; r++)
-	//{
-	//	for (int c = 0; c < BOARD_COLS; c++)
-	//	{
-	//		if (board_[r][c].first)
-	//		{
-	//			window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * c, r * CELL_SIZE, CELL_SIZE, CELL_SIZE}, board_[r][c].second);
-	//		}
-	//	}
-	//	}
+	for (int x = 0; x < nFieldWidth; x++)
+	{
+		for (int y = 0; y < nFieldHeight; y++)
+			{
+				SDL_Color display_color = BLACK;
+				switch (pField[y * nFieldWidth + x])
+				{
+					case '.':
+						display_color = BLACK;
+						break;
+					case 'C':
+						display_color = TETRIS_CYAN;
+						break;
+					case 'A':
+						display_color = TETRIS_GOLD;
+						break;
+					case 'O':
+						display_color = TETRIS_ORANGE;
+						break;
+					case 'G':
+						display_color = TETRIS_GREEN;
+						break;
+					case 'P':
+						display_color = TETRIS_PURPLE;
+						break;
+					case 'R':
+						display_color = TETRIS_RED;
+						break;
+					case 'B':
+						display_color = TETRIS_BLUE;
+						break;
+				}
+				window.renderRect({(SCREEN_WIDTH / 2 - CELL_SIZE * 5) + CELL_SIZE * x, y * CELL_SIZE, CELL_SIZE, CELL_SIZE}, display_color);
+			}
+		}
 
 	//rows
 	for (int r = 18; r > 0; r--)

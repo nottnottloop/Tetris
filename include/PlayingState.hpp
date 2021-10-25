@@ -14,6 +14,7 @@
 class PlayingState : public GameState {
 public:
 	PlayingState();
+	int rotate(int x, int y, int r);
 	void handleInput(Game &game, const SDL_Event &event);
 	void update(Game &game);
 	void advanceGame();
@@ -25,6 +26,7 @@ private:
 	Uint32 ticks_at_last_update_;
 	Uint32 counter_end_;
 	bool piece_falling_;
+	unsigned char *pField;
 	int x_index_;
 	int y_index_;
 	bool button_down_;
