@@ -55,6 +55,14 @@ score_box_({SCREEN_WIDTH / 2 + 250, 50, 200, 100}, {0, 0}, WHITE, BLACK, WHITE, 
 			pField[y*nFieldWidth + x] = (x == 0 || x == nFieldWidth - 1 || y == nFieldHeight - 1) ? 9 : 0;
 
 	updateScoreBox();
+
+	music_ = Mix_LoadMUS("res/tetris.mp3");
+}
+
+void PlayingState::playMusic()
+{
+	Mix_VolumeMusic(5);
+	Mix_PlayMusic(music_, -1);
 }
 
 void PlayingState::updateScoreBox()

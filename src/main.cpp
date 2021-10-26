@@ -16,7 +16,7 @@
 RenderWindow window("Tetris", SCREEN_WIDTH, SCREEN_HEIGHT);
 
 int main(int argc, char* argv[]) {
-	if (SDL_Init(SDL_INIT_VIDEO) > 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) > 0)
 		std::cout << "SDL_Init has failed. sdl_error: " << SDL_GetError() << "\n";
 
 	if (!(IMG_Init(IMG_INIT_PNG)))
@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 	if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 0) == -1)
 		std::cout << "SDL_mixer has failed. Error: " << Mix_GetError() << "\n";
 
-	int flags = MIX_INIT_OGG;
+	int flags = MIX_INIT_OGG | MIX_INIT_MP3;
 	int initted = Mix_Init(flags);
 	if((initted & flags) != flags) {
 			printf("Mix_Init: Failed to init required ogg and mod support!\n");

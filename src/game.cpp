@@ -26,11 +26,13 @@ void Game::setState(GameState *state) {
 
 //set the state to intro
 void Game::introState() {
+	introstate_->playMusic();
 	state_ = introstate_;
 }
 
 //set the state to playing with a given game mode
 void Game::playingState() {
+	playingstate_->playMusic();
 	state_ = playingstate_;
 }
 

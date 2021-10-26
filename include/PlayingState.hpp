@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include <SDL_mixer.h>
 #include <utility>
 #include <vector>
 #include <array>
@@ -14,6 +15,7 @@
 class PlayingState : public GameState {
 public:
 	PlayingState();
+	void playMusic();
 	void updateScoreBox();
 	int rotate(int x, int y, unsigned int r);
 	bool doesPieceFit(int tetromino, int rotation, int x, int y);
@@ -46,4 +48,5 @@ private:
 	Text game_over_text_;
 	BasicButton score_box_;
 	char score_text_[20];
+	Mix_Music *music_;
 };

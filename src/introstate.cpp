@@ -28,7 +28,15 @@ play_button_({SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2, 200, 100}, {0, 0}, BLAC
 	controls_text_2_.openFont("res/fixedsys.ttf", 25);
 	controls_text_2_.loadFontTexture(WHITE, "Arrow keys to move");
 	controls_text_3_.openFont("res/fixedsys.ttf", 25);
-	controls_text_3_.loadFontTexture(WHITE, "Down arrow key to drop piece faster!");
+	controls_text_3_.loadFontTexture(WHITE, "Down arrow key to drop pieces faster!");
+
+	music_ = Mix_LoadMUS("res/gloom.mp3");
+}
+
+void IntroState::playMusic()
+{
+	Mix_VolumeMusic(30);
+	Mix_PlayMusic(music_, -1);
 }
 
 void IntroState::handleInput(Game &game, const SDL_Event &event) 
