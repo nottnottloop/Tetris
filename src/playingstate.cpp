@@ -16,7 +16,7 @@ std::wstring tetromino[7];
 PlayingState::PlayingState()
 :GameState("PlayingState"),
 game_over_(false),
-game_over_text_({SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, {0, 0}),
+game_over_text_({SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 50}, {0, 0}),
 ticks_needed_(300),
 button_down_(false),
 currentPiece(0),
@@ -30,7 +30,7 @@ score_box_({SCREEN_WIDTH / 2 + 250, 50, 200, 100}, {0, 0}, WHITE, BLACK, WHITE, 
 {
 	rd_.seed(std::random_device{}());
 	ticks_at_last_update_ = SDL_GetTicks() + ticks_needed_;
-	game_over_text_.openFont("res/fixedsys.ttf", 30);
+	game_over_text_.openFont("res/fixedsys.ttf", 100);
 	game_over_text_.loadFontTexture(RED, "Game Over!");
 
 	//create tetrominoes
@@ -242,7 +242,7 @@ void PlayingState::handleInput(Game &game, const SDL_Event &event)
 					}
 					break;
 				case SDLK_DOWN:
-					if (!button_down_ || button_held_down_duration_ > BUTTON_HOLD_DOWN_AMOUNT)
+					if (!button_down_ || button_held_down_duration_ > BUTTON_HOLD_DOWN_AMOUNT_FOR_GOING_DOWN)
 					{
 						button_held_down_duration_ -= 2;
 						button_down_ = true;
@@ -345,7 +345,10 @@ void PlayingState::update(Game& game)
 		}
 
 	//render score box
-	updateScoreBox();
+	if (!game_over_)
+	{
+		updateScoreBox();
+	}
 	window.render(score_box_);
 
 	//rows

@@ -35,6 +35,7 @@ constexpr SDL_Color TETRIS_GOLD = {120, 115, 5};
 constexpr SDL_Color TETRIS_CYAN = {0, 186, 185};
 
 constexpr int BUTTON_HOLD_DOWN_AMOUNT = 30;
+constexpr int BUTTON_HOLD_DOWN_AMOUNT_FOR_GOING_DOWN = 10;
 
 constexpr SDL_Color MODS_BLUE = {0x00, 0xCE, 0xFF};
 constexpr SDL_Color GAINSBORO = {220, 220, 220};

@@ -13,6 +13,9 @@ public:
 private:
 	Text text_;
 	Text flavor_text_;
+	Text controls_text_1_;
+	Text controls_text_2_;
+	Text controls_text_3_;
 	BasicButton play_button_;
 	bool mouse_down_;
 	int mouse_x_;
