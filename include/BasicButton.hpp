@@ -7,6 +7,7 @@ class BasicButton : public ButtonBase {
 public:
 	BasicButton(SDL_Rect button_rect, Vector2f offset, SDL_Color text_color, SDL_Color background_color, SDL_Color border_color, int border_thickness, char *message);
 	bool clicked(Uint32 x, Uint32 y);
+	void updateText(char *message);
 private:
 	SDL_Rect rect_;
 	Vector2f offset_;

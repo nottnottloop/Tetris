@@ -23,8 +23,10 @@ currentPiece(0),
 currentRotation(0),
 currentX(nFieldWidth / 2),
 currentY(0),
+score(0),
 button_held_down_duration_(0),
-forceDown(false)
+forceDown(false),
+score_box_({SCREEN_WIDTH / 2 + 250, 50, 200, 100}, {0, 0}, WHITE, BLACK, WHITE, 3, score_text_)
 {
 	rd_.seed(std::random_device{}());
 	ticks_at_last_update_ = SDL_GetTicks() + ticks_needed_;
@@ -52,6 +54,14 @@ forceDown(false)
 		for (int y = 0; y < nFieldHeight; y++)
 			pField[y*nFieldWidth + x] = (x == 0 || x == nFieldWidth - 1 || y == nFieldHeight - 1) ? 9 : 0;
 
+	updateScoreBox();
+}
+
+void PlayingState::updateScoreBox()
+{
+	char message[20];
+	sprintf(message, "Score: %d", score);
+	score_box_.updateText(message);
 }
 
 int PlayingState::rotate(int x, int y, unsigned int r)
@@ -334,6 +344,9 @@ void PlayingState::update(Game& game)
 			vLines.clear();
 		}
 
+	//render score box
+	updateScoreBox();
+	window.render(score_box_);
 
 	//rows
 	for (int r = 18; r > 0; r--)

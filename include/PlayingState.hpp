@@ -14,6 +14,7 @@
 class PlayingState : public GameState {
 public:
 	PlayingState();
+	void updateScoreBox();
 	int rotate(int x, int y, unsigned int r);
 	bool doesPieceFit(int tetromino, int rotation, int x, int y);
 	SDL_Color getBlockDisplayColor(char character);
@@ -43,4 +44,6 @@ private:
 	int button_held_down_duration_;
 	bool game_over_;
 	Text game_over_text_;
+	BasicButton score_box_;
+	char score_text_[20];
 };

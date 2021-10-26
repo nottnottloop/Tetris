@@ -29,3 +29,11 @@ bool BasicButton::clicked(Uint32 x, Uint32 y) {
 	}
 	return false;
 }
+
+void BasicButton::updateText(char *message)
+{
+	text_.loadFontTexture(text_color_, message);
+	int tex_w, tex_h;
+	SDL_QueryTexture(text_.getFgTex(), nullptr, nullptr, &tex_w, &tex_h);
+	text_.setPos({rect_.x + rect_.w / 2 - tex_w / 2.0f, rect_.y + rect_.h / 2 - tex_h / 2.0f});
+}
